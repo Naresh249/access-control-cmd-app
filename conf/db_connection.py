@@ -11,7 +11,6 @@ class InitDbConnection():
 		"""
 		Setting Inital models in Memory if not exists
 		"""
-		import pdb;pdb.set_trace()
 		# conn = sqlite3.connect(":memory:")
 		conn = sqlite3.connect(DATABASE_NAME)
 		conn.execute(db_query.CREATE_USER_TABLE)
