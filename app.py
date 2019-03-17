@@ -24,8 +24,8 @@ if __name__ == '__main__':
 			epilog='Copyrights @Naresh Yadav | 8123961170',
 			add_help=True)
 	parser.add_argument(
-		"cmd_name", type=str, help='regu', default='regu',
-		metavar="Regitser User --> regu")
+		"cmd_name", type=str,
+		metavar="Regitser User --> regu\n  Add Role --> addrole")
 	cmd_name = parser.parse_args().cmd_name
 	res = execute_command(cmd_name)
 	print(res)

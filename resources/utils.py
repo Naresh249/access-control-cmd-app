@@ -22,7 +22,7 @@ def register_user():
 		conn = conn_init.open_connection()
 		cr = conn.cursor()
 		cr.execute(
-			db_query.INSER_RECORD_QUERY.format(
+			db_query.INSERT_RECORD_QUERY.format(
 				table_name='user',
 				col_name=db_query.USER_COL_NAME,
 				values=(
@@ -36,3 +36,35 @@ def register_user():
 		return {'status': True, 'message': 'Sucessfully Created User!'}
 	except Exception as e:
 		return {'status': False, 'error': 'Invalid Request Format.' + str(e)}
+
+def add_role():
+	"""
+	Adding Role 
+	"""
+	params = input('Provide Role Details in Json Format Example\n'\
+					'{"role": "Commiter", "is_readable": true, "is_writable": false, "is_deletable": true}\n')
+	try:
+		params = json.loads(params)
+		request_validator = req_validators.validate_add_role_params(params)
+		if not request_validator.get('status'):
+			return request_validator
+		conn_init = db_conn.InitDbConnection()
+		conn = conn_init.open_connection()
+		cr = conn.cursor()
+		params = request_validator.get('params')
+		cr.execute(
+			db_query.INSERT_RECORD_QUERY.format(
+				table_name='role',
+				col_name=db_query.ROLE_COL,
+				values=(
+					params.get('role'),
+					str(params.get('is_readable', False)),
+					str(params.get('is_writable', False)),
+					str(params.get('is_deletable', False)),
+					params.get('created_by_id')
+					)))
+		conn.commit()
+		conn.close()
+		return {"status": True, "message":"Sucessfully Added Role"}
+	except Exception as e:
+		return {'status': False, 'error': 'Invalid Request Format, Expecting JSON.' + str(e)}		
