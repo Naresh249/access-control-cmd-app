@@ -12,7 +12,7 @@ class InitDbConnection():
 		Setting Inital models in Memory if not exists
 		"""
 		# conn = sqlite3.connect(":memory:")
-		conn = sqlite3.connect(DATABASE_NAME)
+		conn = sqlite3.connect(DATABASE_NAME, timeout=15)
 		conn.execute(db_query.CREATE_USER_TABLE)
 		conn.execute(db_query.CREATE_ROLE_TABLE)
 		conn.execute(db_query.CREATE_USER_ROLE_TABLE)

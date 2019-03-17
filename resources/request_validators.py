@@ -82,3 +82,59 @@ def validate_add_role_params(params):
 		return user_details
 	params['created_by_id'] = user_details.get('data')[0]
 	return {"status": True, "params": params}
+
+def validate_resource_request(params):
+	"""Validating Request Params"""
+	try:
+		resource_name=params['resource_name']
+	except Exception as e:
+		return {
+			'status': False, 
+			'error': 'Field Required {}'.format(str(e))}
+	user_password = input('Enter Email and Password In JSON Format i.e - {"email": "nky249@gmail.com", "password": "XXXX"}\n')
+	user_details = get_valid_user_details(user_password)
+	if not user_details.get('status'):
+		return user_details
+	params['created_by_id'] = user_details.get('data')[0]
+	return {"status": True, "params": params}
+
+def validate_assign_resources(params, logged_in_user_id):
+	"""Validating Request Params"""
+	try:
+		resource_id = params['resource_id']
+		role_id = params['role_id']
+		email = params['email']
+	except Exception as e:
+		return {
+			'status': False, 
+			'error': 'Field Required {}'.format(str(e))}
+	conn_init = db_conn.InitDbConnection()
+	conn = conn_init.open_connection()
+	cr = conn.cursor()
+	
+	if not cr.execute(
+		'select * from resources where id={resource_id} and created_by_id={created_by_id}'.format(
+				resource_id=params['resource_id'],
+				created_by_id=logged_in_user_id)).fetchall():
+		return {'status': False, 'error': 'Resource does not belong to You.'}
+
+	if not cr.execute(
+		'select * from role where id={role_id} and created_by_id={created_by_id}'.format(
+				role_id=params['role_id'],
+				created_by_id=logged_in_user_id)).fetchall():
+		return {'status': False, 'error': 'Role does not belong to You.'}
+
+	assign_user = cr.execute(
+		'select * from user where email="{email_id}" and id!={user_id}'.format(
+				email_id=params['email'],
+				user_id=logged_in_user_id)).fetchone()
+
+	if not assign_user:
+		return {'status': False, 'error': 'Invalid User.'}
+	params['assign_user_id'] = assign_user[0]
+	return {'status': True, 'params': params}
+
+
+
+
+

@@ -59,3 +59,4 @@ INSERT_RECORD_QUERY = "INSERT INTO {table_name} {col_name} VALUES {values}"
 
 USER_COL_NAME = '(name, email, password, mobile_number, is_admin)'
 ROLE_COL = '(role, is_readable, is_writable, is_deletable, created_by_id)'
+RESOURCE_COL = '(resource_name, description, created_by_id)'
