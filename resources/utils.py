@@ -83,6 +83,8 @@ def add_resources():
 		conn = conn_init.open_connection()
 		cr = conn.cursor()
 		params = request_validator.get('params')
+		import pdb;pdb.set_trace()
+		# Creating Resources
 		cr.execute(
 			db_query.INSERT_RECORD_QUERY.format(
 				table_name='resources',
@@ -141,10 +143,11 @@ def assign_resource():
 	cr.execute(
 		db_query.INSERT_RECORD_QUERY.format(
 			table_name='resourcesaccess',
-			col_name=('resource_id', 'user_id'),
+			col_name=('resource_id', 'user_id', 'role_id'),
 			values=(
 				params.get('resource_id'),
-				params.get('assign_user_id')	
+				params.get('assign_user_id'),
+				params.get('role_id')	
 			)))
 	cr.execute(
 		db_query.INSERT_RECORD_QUERY.format(
@@ -158,3 +161,78 @@ def assign_resource():
 	return {"status": True, "message":"Sucessfully Assigned Resource and Role To User."}
 
 
+def read_resource():
+	"""Reading Resources"""
+	params = input('Provide Your Credentails i .e\n {"email": "nky249@gmail.com", "password": "XXX"}\n')
+	user_details = req_validators.get_valid_user_details(params)
+	if not user_details.get('status'):
+		return user_details
+	logged_in_user_id = user_details.get('data')[0]
+	resource_id = int(input('Enter Resource Id - '))
+	conn_init = db_conn.InitDbConnection()
+	conn = conn_init.open_connection()
+	cr = conn.cursor()
+	resource_details = cr.execute('select role_id from resourcesaccess where resource_id={res_id} and user_id={user_id}'.format(
+			res_id=resource_id, user_id=logged_in_user_id)).fetchone()
+
+	if not resource_details:
+		return {'status': False, 'error': "This Resource is not allowed to access you."}
+
+	action_allow = cr.execute('select * from role where id={role_id} and is_readable="true"'.format(
+			role_id=resource_details[0]))
+	if not action_allow:
+		{'status': False, 'error': "You do not have Permission to Read this resource.."}
+
+	return {'status': True, "message": "Action Completed."}
+
+def write_resource():
+	"""Reading Resources"""
+	params = input('Provide Your Credentails i .e\n {"email": "nky249@gmail.com", "password": "XXX"}\n')
+	user_details = req_validators.get_valid_user_details(params)
+	if not user_details.get('status'):
+		return user_details
+	logged_in_user_id = user_details.get('data')[0]
+	resource_id = int(input('Enter Resource Id - '))
+	conn_init = db_conn.InitDbConnection()
+	conn = conn_init.open_connection()
+	cr = conn.cursor()
+	resource_details = cr.execute('select role_id from resourcesaccess where resource_id={res_id} and user_id={user_id}'.format(
+			res_id=resource_id, user_id=logged_in_user_id)).fetchone()
+
+	if not resource_details:
+		return {'status': False, 'error': "This Resource is not allowed to access you."}
+
+	action_allow = cr.execute('select * from role where id={role_id} and is_writable="true"'.format(
+			role_id=resource_details[0]))
+	if not action_allow:
+		{'status': False, 'error': "You do not have Permission to Read this resource.."}
+
+	return {'status': True, "message": "Action Completed."}	
+	
+	return
+
+def delete_resource():
+	"""Reading Resources"""
+	params = input('Provide Your Credentails i .e\n {"email": "nky249@gmail.com", "password": "XXX"}\n')
+	user_details = req_validators.get_valid_user_details(params)
+	if not user_details.get('status'):
+		return user_details
+	logged_in_user_id = user_details.get('data')[0]
+	resource_id = int(input('Enter Resource Id - '))
+	conn_init = db_conn.InitDbConnection()
+	conn = conn_init.open_connection()
+	cr = conn.cursor()
+	resource_details = cr.execute('select role_id from resourcesaccess where resource_id={res_id} and user_id={user_id}'.format(
+			res_id=resource_id, user_id=logged_in_user_id)).fetchone()
+
+	if not resource_details:
+		return {'status': False, 'error': "This Resource is not allowed to access you."}
+
+	action_allow = cr.execute('select * from role where id={role_id} and is_deletable="true"'.format(
+			role_id=resource_details[0]))
+	if not action_allow:
+		{'status': False, 'error': "You do not have Permission to Read this resource.."}
+
+	return {'status': True, "message": "Action Completed."}
+
+	return 

@@ -42,7 +42,9 @@ CREATE_RESOURCES_ACCESS_TABLE = """CREATE TABLE IF NOT EXISTS resourcesaccess(""
 							"""{cmn_col},"""\
 							"""user_id integer NOT NULL,"""\
 							"""resource_id integer NOT NULL,"""\
+							"""role_id integer NOT NULL,"""\
 							"""FOREIGN KEY (id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE NO ACTION,"""\
+							"""FOREIGN KEY (id) REFERENCES role (role_id) ON DELETE CASCADE ON UPDATE NO ACTION,"""\
 							"""FOREIGN KEY (id) REFERENCES resources (resource_id) ON DELETE CASCADE ON UPDATE NO ACTION)""".format(cmn_col=COMMON_COLUMNS)
 
 CREATE_ADMIN_USER_MAPPING = """CREATE TABLE IF NOT EXISTS adminusermapping("""\
