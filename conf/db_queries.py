@@ -3,7 +3,7 @@ COMMON_COLUMNS = """is_deleted boolean default false,"""\
 				"""updated_at datetime default current_timestamp"""
 
 CREATE_USER_TABLE = """CREATE TABLE IF NOT EXISTS user("""\
-					"""id integer PRIMARY KEY,"""\
+					"""id integer PRIMARY KEY AUTOINCREMENT,"""\
 					"""name text NOT NULL,"""\
 					"""email text NOT NULL UNIQUE,"""\
 					"""password text NOT NULL,"""\
@@ -45,3 +45,8 @@ CREATE_ADMIN_USER_MAPPING = """CREATE TABLE IF NOT EXISTS adminusermapping("""\
 							"""FOREIGN KEY (id) REFERENCES user (admin_id) ON DELETE CASCADE ON UPDATE NO ACTION,"""\
 							"""FOREIGN KEY (id) REFERENCES user (member_id) ON DELETE CASCADE ON UPDATE NO ACTION)""".format(cmn_col=COMMON_COLUMNS)
 
+SELECT_RECORD_QUERY = "SELECT * from {table_name} WHERE {where_clause}"
+
+INSER_RECORD_QUERY = "INSERT INTO {table_name} {col_name} VALUES {values}"
+
+USER_COL_NAME = '(name, email, password, mobile_number, is_admin)'

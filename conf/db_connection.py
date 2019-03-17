@@ -19,7 +19,6 @@ class InitDbConnection():
 		conn.execute(db_query.CREATE_RESOURCES_TABLE)
 		conn.execute(db_query.CREATE_RESOURCES_ACCESS_TABLE)
 		conn.execute(db_query.CREATE_ADMIN_USER_MAPPING)
-		conn.close()
 
 	def open_connection(self):
 		"""
